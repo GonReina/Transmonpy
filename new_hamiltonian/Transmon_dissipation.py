@@ -9,20 +9,25 @@ at=t.time()
 
 sites=4
 nmax=4
-tsteps=10000000
+# tsteps=10000000
+tsteps=10000
 dt=.0002
 
-J=np.pi/77 #pi over period of rabi oscillation of excited transmon when driven resonantly
-nu=10
-delta=1
-de=-1*delta
-wq=100
-EJ=100
-eta=1
+#real parametersggg
+J=2*np.pi*0.015 #could be made bigger eventually
+nu=2*np.pi*4 #change Energies so this is the resonator's
+# delta=2*np.pi*0.1 #change Energies so this is really the dfetuning
+delta=0
+# de=-1*delta
+de=-1
+wq=2*np.pi*5
+EJ=2*np.pi*12
+eta=.1
 phiq=0.43
 phia=0.019
-ct=-2*np.pi/18.5 #compensating tone: 2pi over the period of the rabi oscillation of empty transmon when driven resonantly
-kappa= 0.001
+kappa= 0.002
+ct=-2*np.pi/-0.09725 #compensating tone: 2pi over the period of the rabi oscillation of empty transmon when driven resonantly
+
 
 n=np.diag(np.arange(nmax))
 a=np.diag(np.sqrt(np.arange(1,nmax)),1)
@@ -70,23 +75,21 @@ EX2d=EX2.conj().T
 EX=EJ*(EX1+EX2)/2
 EXd=EJ*(EX1d+EX2d)/2
 
-JXqsum=ct*(np.kron(xq,idv2)/phiq+np.kron(idv2,xq)/phiq)
+Xqsum=(np.kron(xq,idv2)/phiq+np.kron(idv2,xq)/phiq)
 
-ctXrsum=J*(np.kron(xr,idv2)/phia+np.kron(idv2,xr)/phia)
+ctXrsum=ct*(np.kron(xr,idv2)/phia+np.kron(idv2,xr)/phia)
 
-EJXsum=EJ*Xsum1+EJ*Xsum2+ctXrsum+JXqsum
+eta_ct_Xsum=ctXrsum+Xqsum
 EJXsumSQ=EJ*Xsum1@Xsum1/2+EJ*Xsum2@Xsum2/2
 
 JCoupl=J*np.kron(xq,xq)/phiq**2
-H0=H0+JCoupl+EJXsumSQ
+H0=H0+JCoupl+EJXsumSQ+EX+EXd
 
 
 def Lrho(rho,t):
     etat=eta*np.cos(nu*t)
-    etatXsum=etat*EJXsum
-    # etat2ID=etat**2*ID
-    etat2ID=2*ID
-    drhodt = (-1j*(H0+EX+EXd+etatXsum+etat2ID)-knsum)@rho
+    etatXsum=etat*eta_ct_Xsum
+    drhodt = (-1j*(H0+etatXsum)-knsum)@rho
     drhodt = drhodt + drhodt.conj().T + kav0@rho@adv0 + kav1@rho@adv1
     return drhodt
 
@@ -103,7 +106,7 @@ n1=np.kron(idv2,np.kron(n,idv))
 
 #Propagation with Runge Kutta
 njt=np.zeros((tsteps,4))
-with tqdm(total=10000000) as pbar:
+with tqdm(total=10000) as pbar:
     for i in np.arange(tsteps):
         njt[i,0]=np.abs(np.trace(n0@rho))
         njt[i,1]=np.abs(np.trace(n1@rho))
