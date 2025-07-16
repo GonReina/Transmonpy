@@ -84,6 +84,7 @@ H0=H0+JCoupl+EJXsumSQ
 def Lrho(rho,t):
     etat=eta*np.cos(nu*t)
     etatXsum=etat*EJXsum
+    # etat2ID=etat**2*ID
     etat2ID=etat**2*ID
     drhodt = (-1j*(H0+EX+EXd+etatXsum+etat2ID)-knsum)@rho
     drhodt = drhodt + drhodt.conj().T + kav0@rho@adv0 + kav1@rho@adv1
