@@ -3,7 +3,7 @@ from scipy.linalg import expm
 import time as t
 import sys
 import os
-
+import matplotlib.pyplot as plt
 
 at=t.time()
 
@@ -120,9 +120,24 @@ for i in np.arange(tsteps):
     
     # Periodically save data
     if (i+1) % save_interval == 0 or (i+1) == tsteps:
-        np.save(os.path.join(output_dir, f"njt_step_{i+1}.npy"), njt[:i+1])
+        # If there is a previous npy file, delete it and save the new one
+        for f in os.listdir(output_dir):
+            if f.endswith(".npy"):
+                os.remove(os.path.join(output_dir, f))
+        # Save the current step data
+        print(f"Saving step {i+1} to {output_dir}")
+        np.save(os.path.join(output_dir, f"njt_step_{i+1}.npy"), njt)
         elapsed = t.time() - at
         print(f"Progress: Step {i+1}/{tsteps} saved. Elapsed time: {elapsed:.2f} seconds.")
+        # Produce and save a plot with current values
+        time = np.arange(i) * dt
+        # Plot all columns
+        plt.plot(time, njt)    
+        plt.xlabel('Time (ns)')
+        plt.ylabel('Population')
+        plt.grid()
+        # Save the plot to data directory
+        plt.savefig(os.path.join(output_dir, 'population_plot.png'))
 
 
-# np.save("TransmonSim_kappa_{}.npy".format(kappa), njt)
+np.save("TransmonSim_kappa_{}.npy".format(kappa), njt)
