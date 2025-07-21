@@ -9,11 +9,11 @@ at=t.time()
 
 sites=4
 nmax=4
-tsteps=1000000
+tsteps=10000000
 
 output_dir = "/home/shared/DATA/July/New_H_old_params"
 os.makedirs(output_dir, exist_ok=True)
-save_interval = 25000  # Save every 10000 steps
+save_interval = 200000
 
 dt=.0002
 
@@ -130,9 +130,9 @@ for i in np.arange(tsteps):
         elapsed = t.time() - at
         print(f"Progress: Step {i+1}/{tsteps} saved. Elapsed time: {elapsed:.2f} seconds.")
         # Produce and save a plot with current values
-        time = np.arange(i) * dt
+        time = np.arange(i+1) * dt
         # Plot all columns
-        plt.plot(time, njt)    
+        plt.plot(time, njt[:i+1, :])    
         plt.xlabel('Time (ns)')
         plt.ylabel('Population')
         plt.grid()
