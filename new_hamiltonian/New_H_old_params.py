@@ -9,7 +9,7 @@ at=t.time()
 
 sites=4
 nmax=4
-tsteps=10000000
+tsteps=1000000
 
 output_dir = "/home/shared/DATA/July/New_H_old_params"
 os.makedirs(output_dir, exist_ok=True)

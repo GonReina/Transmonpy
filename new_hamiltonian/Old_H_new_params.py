@@ -13,7 +13,7 @@ tsteps=10000000
 
 output_dir = "/home/shared/DATA/July/Old_H_new_params"
 os.makedirs(output_dir, exist_ok=True)
-save_interval = 25000  # Save every 10000 steps
+save_interval = 400000
 
 dt=.0002
 
@@ -30,7 +30,7 @@ eta=.1
 phiq=0.43
 phia=0.019
 kappa= 0.002
-ct=-2*np.pi/-0.09725 #change this to be the same as in the other file
+ct = -0.098
 
 n=np.diag(np.arange(nmax))
 a=np.diag(np.sqrt(np.arange(1,nmax)),1)
@@ -125,9 +125,24 @@ for i in np.arange(tsteps):
     
     # Periodically save data
     if (i+1) % save_interval == 0 or (i+1) == tsteps:
-        np.save(os.path.join(output_dir, f"njt_step_{i+1}.npy"), njt[:i+1])
+        # If there is a previous npy file, delete it and save the new one
+        for f in os.listdir(output_dir):
+            if f.endswith(".npy"):
+                os.remove(os.path.join(output_dir, f))
+        # Save the current step data
+        print(f"Saving step {i+1} to {output_dir}")
+        np.save(os.path.join(output_dir, f"njt_step_{i+1}.npy"), njt)
         elapsed = t.time() - at
         print(f"Progress: Step {i+1}/{tsteps} saved. Elapsed time: {elapsed:.2f} seconds.")
+        # Produce and save a plot with current values
+        time = np.arange(i) * dt
+        # Plot all columns
+        plt.plot(time, njt)    
+        plt.xlabel('Time (ns)')
+        plt.ylabel('Population')
+        plt.grid()
+        # Save the plot to data directory
+        plt.savefig(os.path.join(output_dir, 'population_plot.png'))
 
 
-# np.save("TransmonSim_kappa_{}.npy".format(kappa), njt)
+np.save("TransmonSim_kappa_{}.npy".format(kappa), njt)
