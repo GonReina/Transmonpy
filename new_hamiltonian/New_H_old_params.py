@@ -11,7 +11,7 @@ sites=4
 nmax=4
 tsteps=10000000
 
-output_dir = "/home/shared/DATA/July/New_H_old_params"
+output_dir = "/home/gon/test_gon/"
 os.makedirs(output_dir, exist_ok=True)
 save_interval = 200000
 
@@ -26,7 +26,7 @@ EJ=100
 eta=1
 phiq=0.43
 phia=0.019
-ct=-2*np.pi/18.5
+ct=0
 kappa = 0.002
 
 n=np.diag(np.arange(nmax))
