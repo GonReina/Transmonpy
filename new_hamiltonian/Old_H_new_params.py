@@ -20,9 +20,7 @@ dt=.0002
 #real parametersggg
 J=2*np.pi*0.015 #could be made bigger eventually
 nu=2*np.pi*4 #change Energies so this is the resonator's
-# delta=2*np.pi*0.1 #change Energies so this is really the dfetuning
-delta=0
-# de=-1*delta
+delta=2*np.pi*0.1 #change Energies so this is really the dfetuning
 de=-1
 wq=2*np.pi*5
 EJ=2*np.pi*12
